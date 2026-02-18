@@ -17,18 +17,6 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "husky": "^8.0.3",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.8.1"
-  },
-  "lint-staged": {
-    "frontend_nextjs/**/*.{js,ts,tsx}": [
-      "cd frontend_nextjs && npm run lint",
-      "prettier --write"
-    ],
-    "backend_nestjs/**/*.{js,ts}": [
-      "cd backend_nestjs && npm run lint",
-      "prettier --write"
-    ]
+    "husky": "^8.0.3"
   }
 }
