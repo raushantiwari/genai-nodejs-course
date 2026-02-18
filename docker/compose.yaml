@@ -1,0 +1,145 @@
+services:
+  # ===============================
+  # MongoDB
+  # ===============================
+  mongodb:
+    image: mongo:7
+    container_name: rag-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: ragmongo
+    volumes:
+      - mongo_rag_data:/data/db
+    networks:
+      - rag-network
+  # ===============================
+  # PostgreSQL + PGVector
+  # ===============================
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ragdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - rag-network
+
+  # ===============================
+  # Redis
+  # ===============================
+  redis:
+    image: redis:7-alpine
+    container_name: rag-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - rag-network
+
+  # ===============================
+  # Adminer (Postgres UI)
+  # ===============================
+  adminer:
+    image: adminer
+    container_name: rag-adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - rag-network
+
+  # ===============================
+  # Redis UI (Redis Commander)
+  # ===============================
+  redis-ui:
+    image: rediscommander/redis-commander:latest
+    container_name: rag-redis-ui
+    restart: always
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - rag-network
+
+  # ===============================
+  # NestJS Backend
+  # ===============================
+  backend:
+    build:
+      context: ../backend_nestjs
+      dockerfile: ../docker/Dockerfile.backend.dev
+    image: genai-langchain-learn-nestjs-backend:dev
+    container_name: genai-langchain-learn-nestjs-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ragdb
+      REDIS_URL: redis://redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      VECTOR_STORE_PATH: /app/vector_store
+      NODE_ENV: development
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ../backend_nestjs:/app
+      - vector_data:/app/vector_store
+    command: npm run start:dev
+    networks:
+      - rag-network
+
+  # ===============================
+  # Next.js Frontend
+  # ===============================
+  app:
+    build:
+      context: ../frontend_nextjs
+      dockerfile: ../docker/Dockerfile.fe.dev
+    image: genai-langchain-learn-nestjs-frontend:dev
+    container_name: genai-langchain-learn-nestjs-frontend
+    restart: always
+    ports:
+      - "8082:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:5000
+    volumes:
+      - ../frontend_nextjs:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    depends_on:
+      - backend
+    networks:
+      - rag-network
+
+# ===============================
+# Volumes
+# ===============================
+volumes:
+  postgres_data:
+  vector_data:
+  mongo_rag_data:
+
+# ===============================
+# Network
+# ===============================
+networks:
+  rag-network:
+    driver: bridge
