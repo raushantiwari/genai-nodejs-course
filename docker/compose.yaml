@@ -14,8 +14,13 @@ services:
       MONGO_INITDB_DATABASE: ragmongo
     volumes:
       - mongo_rag_data:/data/db
+      - ../logs:/logs
+    command: >
+      sh -c "mongod --bind_ip_all
+      2>&1 | tee /logs/mongodb.log"
     networks:
       - rag-network
+
   # ===============================
   # PostgreSQL + PGVector
   # ===============================
@@ -31,6 +36,10 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ../logs:/logs
+    command: >
+      sh -c "docker-entrypoint.sh postgres
+      2>&1 | tee /logs/postgres.log"
     networks:
       - rag-network
 
@@ -43,11 +52,16 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    volumes:
+      - ../logs:/logs
+    command: >
+      sh -c "redis-server
+      2>&1 | tee /logs/redis.log"
     networks:
       - rag-network
 
   # ===============================
-  # Adminer (Postgres UI)
+  # Adminer
   # ===============================
   adminer:
     image: adminer
@@ -61,7 +75,7 @@ services:
       - rag-network
 
   # ===============================
-  # Redis UI (Redis Commander)
+  # Redis UI
   # ===============================
   redis-ui:
     image: rediscommander/redis-commander:latest
@@ -91,16 +105,21 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ragdb
       REDIS_URL: redis://redis:6379
+      MONGO_URL: mongodb://root:root@mongodb:27017/ragmongo?authSource=admin
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       VECTOR_STORE_PATH: /app/vector_store
       NODE_ENV: development
     depends_on:
       - postgres
       - redis
+      - mongodb
     volumes:
       - ../backend_nestjs:/app
       - vector_data:/app/vector_store
-    command: npm run start:dev
+      - ../logs:/logs
+    command: >
+      sh -c "npm run start:dev
+      2>&1 | tee /logs/backend.log"
     networks:
       - rag-network
 
@@ -121,9 +140,10 @@ services:
       NEXT_PUBLIC_API_URL: http://localhost:5000
     volumes:
       - ../frontend_nextjs:/app
-      - /app/node_modules
-      - /app/.next
-    command: npm run dev
+      - ../logs:/logs
+    command: >
+      sh -c "npm run dev
+      2>&1 | tee /logs/frontend.log"
     depends_on:
       - backend
     networks:
