@@ -2,3 +2,5 @@
 node_modules/
 .husky/
 logs/
+docker/.env
+

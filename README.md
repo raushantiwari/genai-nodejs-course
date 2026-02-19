@@ -50,3 +50,15 @@ $ npm run start:dev
 Connect Compass to Docker MongoDB
 
     mongodb://root:root@localhost:27017/?authSource=admin
+
+---
+
+Ollama Setup
+
+    Install Ollama locally: https://ollama.com/docs/installation
+    Pull GenAI models: gemma3:latest, gemma2:latest
+    Run Ollama: ollama run
+
+    Setup local ollama with Docker:
+    In docker/.env, set OLLAMA_BASE_URL=http://host.docker.internal:11434
+    This allows backend to connect to local Ollama from Docker.

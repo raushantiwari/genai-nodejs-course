@@ -107,6 +107,7 @@ services:
       REDIS_URL: redis://redis:6379
       MONGO_URL: mongodb://root:root@mongodb:27017/ragmongo?authSource=admin
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
       VECTOR_STORE_PATH: /app/vector_store
       NODE_ENV: development
     depends_on:
@@ -122,6 +123,8 @@ services:
       2>&1 | tee /logs/backend.log"
     networks:
       - rag-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # ===============================
   # Next.js Frontend
