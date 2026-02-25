@@ -1,6 +1,0 @@
-node_modules
-.docker
-.dockerignore
-.next
-npm-debug.log
-yarn-error.log

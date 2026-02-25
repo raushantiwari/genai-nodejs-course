@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend.dev
+    image: genai-nodejs-course-nextjs-frontend:dev
+    container_name: genai-nodejs-course-nextjs-frontend
+    ports:
+      - '8082:3000' # 8082 for browser access, 3000 is the internal port
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:5000
+    develop:
+      watch:
+        # Sync source code changes without rebuild
+        - action: sync
+          path: ../
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
+
+        # Rebuild when package.json changes
+        - action: rebuild
+          path: ../package.json

@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docker:dev": "docker compose -f docker/compose.yaml up",
+    "docker:dev:build": "docker compose -f docker/compose.yaml up --build",
+    "docker:dev:down": "docker compose -f docker/compose.yaml down"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
