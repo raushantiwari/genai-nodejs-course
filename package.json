@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "husky install",
     "lint": "npm run lint:frontend && npm run lint:backend",
-    "lint:frontend": "cd frontend_nextjs && npm run lint",
+    "lint:frontend": "cd fe_rag_app_nextjs && npm run lint",
     "lint:backend": "cd backend_nestjs && npm run lint"
   },
   "repository": {

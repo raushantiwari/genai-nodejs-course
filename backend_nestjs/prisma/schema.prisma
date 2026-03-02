@@ -1,79 +1,82 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"   // required in v7
+}
+
+// NOTE: url in datasource block is DEPRECATED in v7
+// Move it to prisma.config.ts instead
 datasource db {
   provider = "postgresql"
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique @db.VarChar(255)
-  description String?
-  color       String?   @default("#3b82f6") @db.VarChar(7)
-  createdAt   DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime? @default(now()) @db.Timestamp(6)
-  Note        Note[]
+// ─── Models ───────────────────────────────────────────
 
-  @@index([name], map: "idx_category_name")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Note {
-  id         Int       @id @default(autoincrement())
-  content    String
-  categoryId Int
-  createdAt  DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt  DateTime? @default(now()) @db.Timestamp(6)
-  Category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([categoryId], map: "idx_note_categoryid")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Subtask {
-  id        Int       @id @default(autoincrement())
-  title     String    @db.VarChar(255)
-  completed Boolean?  @default(false)
-  todoId    Int
-  createdAt DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt DateTime? @default(now()) @db.Timestamp(6)
-  Todo      Todo      @relation(fields: [todoId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([todoId], map: "idx_subtask_todoid")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Todo {
-  id          Int       @id @default(autoincrement())
-  title       String    @db.VarChar(255)
-  description String?
-  completed   Boolean?  @default(false)
-  priority    String?   @default("medium") @db.VarChar(50)
-  dueDate     DateTime? @db.Timestamp(6)
-  tags        String?   @db.VarChar(255)
-  userId      Int
-  createdAt   DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime? @default(now()) @db.Timestamp(6)
-  Subtask     Subtask[]
-  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([completed], map: "idx_todo_completed")
-  @@index([dueDate], map: "idx_todo_duedate")
-  @@index([priority], map: "idx_todo_priority")
-  @@index([userId], map: "idx_todo_userid")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique @db.VarChar(100)
-  name      String?   @db.VarChar(255)
-  password  String    @db.VarChar(255)
-  active    Boolean?  @default(true)
-  role      String?   @default("user") @db.VarChar(50)
-  createdAt DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt DateTime? @default(now()) @db.Timestamp(6)
-  Todo      Todo[]
-  age       Int?
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  avatar    String?
+  bio       String?
+  role      Role     @default(USER)
+  posts     Post[]
+  comments  Comment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
-  @@index([active], map: "idx_user_active")
-  @@index([email], map: "idx_user_email")
+  @@index([email])
+  @@map("users")
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  content     String
+  excerpt     String?
+  coverImage  String?
+  published   Boolean    @default(false)
+  publishedAt DateTime?
+  authorId    String
+  author      User       @relation(fields: [authorId], references: [id])
+  tags        Tag[]
+  comments    Comment[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+
+  @@index([slug])
+  @@index([authorId])
+  @@index([published])
+  @@map("posts")
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  posts Post[]
+
+  @@map("tags")
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([postId])
+  @@map("comments")
+}
+
+enum Role {
+  USER
+  ADMIN
+  EDITOR
 }
