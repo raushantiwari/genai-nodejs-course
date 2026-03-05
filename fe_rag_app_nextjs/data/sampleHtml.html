@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat UI</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">◎</div>
+          <div class="collapse">☰</div>
+        </div>
+
+        <button class="new-chat">+ New chat</button>
+
+        <nav class="menu">
+          <div class="menu-item active">Building or Debugging Today</div>
+          <div class="menu-item">LLM Content Search Tips</div>
+          <div class="menu-item">Figma Context MCP Setup</div>
+          <div class="menu-item">Vector DB with PostgreSQL</div>
+          <div class="menu-item">Data Ingestion Architecture</div>
+        </nav>
+
+        <div class="profile">
+          <div class="avatar"></div>
+          <div>
+            <div class="name">Raushan Tiwari</div>
+            <div class="plan">Go</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <main class="chat">
+        <header class="chat-header">
+          <div class="model">ChatGPT 5.2 ▼</div>
+          <div class="actions">Share ⋯</div>
+        </header>
+
+        <div class="chat-content">
+          <div class="message">
+            <p class="title">Hey Raushan 👋</p>
+            <p>
+              What are we building or debugging today — Next.js, RAG with Qdrant + Ollama, or some
+              UI component magic? 🚀
+            </p>
+          </div>
+        </div>
+
+        <!-- Floating Menu -->
+        <div class="floating-menu">
+          <div class="menu-option">📎 Add photos & files</div>
+          <div class="menu-option">🖼 Create image</div>
+          <div class="menu-option">💡 Thinking</div>
+          <div class="menu-option">🔬 Deep research</div>
+          <div class="menu-option">🛒 Shopping research</div>
+          <div class="menu-option more">⋯ More</div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input">
+          <button class="plus">+</button>
+          <input type="text" placeholder="Ask anything" />
+          <button class="voice">🎤</button>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

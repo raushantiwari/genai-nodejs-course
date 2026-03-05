@@ -1,0 +1,84 @@
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.chat-wrapper {
+  width: 100%;
+  max-width: 910px;
+  margin: auto;
+}
+
+/* messages */
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* input */
+
+.input-area {
+  margin-top: 30px;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #262626;
+  font-size: 14px;
+}
+
+/* message row */
+
+.messageRow {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.messageRow.user {
+  justify-content: flex-end;
+}
+
+/* icons */
+
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2b2b2b;
+}
+
+.icon img {
+  width: 20px;
+  height: 20px;
+}
+
+/* bubbles */
+
+.messageBubble {
+  max-width: 600px;
+  padding: 3px 5px;
+  border-radius: 10px;
+  background: #1f1f1f;
+  color: white;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.messageRow.user .messageBubble {
+  background: #2a2a2a;
+}

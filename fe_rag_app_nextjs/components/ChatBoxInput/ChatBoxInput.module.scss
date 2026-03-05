@@ -1,0 +1,35 @@
+/* Input */
+.chat-container {
+  display: flex;
+  justify-content: center;
+}
+.chat-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inputbox {
+  flex: 1;
+}
+.chat-input input {
+  background: #262626;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 24px;
+  color: white;
+  outline: none;
+  display: block;
+  width: 100%;
+}
+
+.plus,
+.voice {
+  background: #262626;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}
