@@ -14,9 +14,19 @@ const ChatBoxInput = () => {
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  const { ref, ...rest } = register('message');
+
   const onSubmit = (data: FormValues) => {
+    if (!data.message.trim()) return;
+
     console.log(data.message);
+
     reset();
+
+    // reset textarea height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
   };
 
   const autoResize = () => {
@@ -27,22 +37,36 @@ const ChatBoxInput = () => {
     textarea.style.height = textarea.scrollHeight + 'px';
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles['chat-input']}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(onSubmit)();
+      }}
+      className={styles['chat-input']}
+    >
       <button type="button" className={styles.plus}>
         {ICONS.PLUS_ICON}
       </button>
 
       <textarea
-        {...register('message')}
+        {...rest}
         ref={(e) => {
-          register('message').ref(e);
+          ref(e);
           textareaRef.current = e;
         }}
         rows={1}
         placeholder="Ask anything"
         className={styles.textarea}
         onInput={autoResize}
+        onKeyDown={handleKeyDown}
       />
 
       <button type="submit" className={styles.voice}>

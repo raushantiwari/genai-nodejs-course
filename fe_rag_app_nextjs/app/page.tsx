@@ -1,5 +1,6 @@
 import ChatArea from '@/components/ChatAreaSection';
 import styles from '@/components/ChatAreaSection/ChatAreaSection.module.scss';
+import ModelSection from '@/components/ChatAreaSection/dependencies/ModelSection';
 import LeftSideSection from '@/components/LeftSideSection';
 
 const HomePage = () => {
@@ -8,7 +9,9 @@ const HomePage = () => {
       <LeftSideSection />
       <main className={styles.chat}>
         <header className={styles['chat-header']}>
-          <div className={styles.model}>ChatGPT 5.2 ▼</div>
+          <div className={styles.model}>
+            <ModelSection />
+          </div>
           <div className={styles.actions}>Share ⋯</div>
         </header>
         <ChatArea />
