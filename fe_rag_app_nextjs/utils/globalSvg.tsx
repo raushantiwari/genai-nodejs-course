@@ -69,9 +69,18 @@ export const ICONS = {
     </svg>
   ),
   USER_ICON: (
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
-      <circle cx="50" cy="35" r="20" stroke="white" strokeWidth="6" fill="none" />
-      <path d="M20 90 Q50 50 80 90" stroke="white" strokeWidth="6" fill="none" />
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={20} height={20}>
+      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+      <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+      <g id="SVGRepo_iconCarrier">
+        <circle cx="12" cy="6" r="4" stroke="#696a6d" strokeWidth="1.5"></circle>
+        <path
+          d="M19.9975 18C20 17.8358 20 17.669 20 17.5C20 15.0147 16.4183 13 12 13C7.58172 13 4 15.0147 4 17.5C4 19.9853 4 22 12 22C14.231 22 15.8398 21.8433 17 21.5634"
+          stroke="#696a6d"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        ></path>
+      </g>
     </svg>
   ),
   LLM_ICON: (
