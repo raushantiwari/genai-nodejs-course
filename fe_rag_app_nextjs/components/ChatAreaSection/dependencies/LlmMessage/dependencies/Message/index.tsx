@@ -1,4 +1,5 @@
 import styles from '@/components/ChatAreaSection/ChatAreaSection.module.scss';
+import SafeHtml from '@/components/common/SafeHtml';
 import { ChatMessage } from '@/store/slices/chatSlice';
 import { ICONS } from '@/utils/globalSvg';
 import React from 'react';
@@ -20,7 +21,7 @@ const Message = ({ data }: MessageProps) => {
       <div className={`${styles.messageRow} ${styles.llm}`}>
         <div className={styles.icon}>{ICONS.LLM_ICON}</div>
         <div className={styles.messageBubble}>
-          <p>{answer}</p>
+          <SafeHtml html={answer} />
 
           <span className={styles.metadata}>
             {provider} - {model}
