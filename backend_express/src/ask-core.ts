@@ -33,6 +33,7 @@ export async function askStructured(
 
   const response = {
     ...result,
+    user_query: query,
     provider: provider,
     model: modelName,
     timestamp: Date.now(),

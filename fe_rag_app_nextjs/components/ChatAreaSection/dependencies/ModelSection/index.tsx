@@ -5,11 +5,11 @@ import { useState, useTransition } from 'react';
 import styles from './ModelSection.module.scss';
 
 const models = [
-  { label: 'GPT-4o Mini (OpenAI)', value: 'gpt-4o-mini' },
-  { label: 'GPT-4.1 Nano (OpenAI)', value: 'gpt-4.1-nano' },
-  { label: 'GPT-5 Nano (OpenAI)', value: 'gpt-5-nano' },
-  { label: 'Gemma 3 (Ollama)', value: 'gemma3' },
-  { label: 'Groq LLM', value: 'groq-llm' },
+  { label: 'GPT-4o Mini (OpenAI)', value: 'openai|gpt-4o-mini' },
+  { label: 'GPT-4.1 Nano (OpenAI)', value: 'openai|gpt-4.1-nano' },
+  { label: 'GPT-5 Nano (OpenAI)', value: 'openai|gpt-5-nano' },
+  { label: 'Gemma 3 (Ollama)', value: 'ollama|gemma3' },
+  { label: 'Groq LLM', value: 'groq|llama-3.3-70b-versatile' },
 ];
 
 const ModelSection = () => {

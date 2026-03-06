@@ -1,16 +1,18 @@
-import { ICONS } from '@/utils/globalSvg';
-import styles from '../../ChatAreaSection.module.scss';
+'use client';
+
+import { RootState } from '@/store/store';
+import { useSelector } from 'react-redux';
+import Message from './dependencies/Message';
 
 const LlmMessage = () => {
-  return (
-    <div className={`${styles.messageRow} ${styles.llm}`}>
-      <div className={styles.icon}>{ICONS.LLM_ICON}</div>
+  const chatMessages = useSelector((state: RootState) => state.chat.messages);
 
-      <div className={styles.messageBubble}>
-        Hi there! Im your AI assistant, here to help you with anything you need. Whether its coding,
-        debugging, or just some fun conversation, Im ready to assist! 😊
-      </div>
-    </div>
+  return (
+    <>
+      {chatMessages.map((msg) => (
+        <Message key={msg.id} data={msg} />
+      ))}
+    </>
   );
 };
 

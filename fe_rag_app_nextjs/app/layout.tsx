@@ -1,3 +1,4 @@
+import StoreProvider from '@/store/StoreProvider';
 import { Montserrat } from 'next/font/google';
 import './globals.css';
 
@@ -14,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.className}`}>{children}</body>
+      <body className={`${montserrat.className}`}>
+        <StoreProvider>{children}</StoreProvider>
+      </body>
     </html>
   );
 }
