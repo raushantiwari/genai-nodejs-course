@@ -4,28 +4,47 @@ import { ChatMessage } from '@/store/slices/chatSlice';
 import { ICONS } from '@/utils/globalSvg';
 import React from 'react';
 
-type MessageProps = {
-  data: ChatMessage;
+type StatusInfo = {
+  userInput: string;
+  status: 'pending' | 'success';
 };
 
-const Message = ({ data }: MessageProps) => {
-  const { question, answer, provider, model } = data;
+type MessageProps = {
+  data?: ChatMessage;
+  statusInfo: StatusInfo;
+};
+
+const Message = ({ data, statusInfo }: MessageProps) => {
+  const isPending = !data && statusInfo.status === 'pending';
+
+  const question = isPending ? statusInfo.userInput : data?.question;
+  const answer = data?.answer;
+  const provider = data?.provider;
+  const model = data?.model;
 
   return (
     <>
+      {/* USER MESSAGE */}
       <div className={`${styles.messageRow} ${styles.user}`}>
         <div className={styles.messageBubble}>{question}</div>
         <div className={styles.icon}>{ICONS.USER_ICON}</div>
       </div>
 
+      {/* LLM RESPONSE */}
       <div className={`${styles.messageRow} ${styles.llm}`}>
         <div className={styles.icon}>{ICONS.LLM_ICON}</div>
-        <div className={styles.messageBubble}>
-          <SafeHtml html={answer} />
 
-          <span className={styles.metadata}>
-            {provider} - {model}
-          </span>
+        <div className={styles.messageBubble}>
+          {isPending
+            ? '...'
+            : answer && (
+                <>
+                  <SafeHtml html={answer} />
+                  <span className={styles.metadata}>
+                    {provider} - {model}
+                  </span>
+                </>
+              )}
         </div>
       </div>
     </>

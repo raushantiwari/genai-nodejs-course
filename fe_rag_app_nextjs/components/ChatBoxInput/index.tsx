@@ -13,7 +13,11 @@ type FormValues = {
   message: string;
 };
 
-const ChatBoxInput = () => {
+type ChatBoxInputProps = {
+  onLLMStatusChange?: (input: string, status: 'pending' | 'success') => void;
+};
+
+const ChatBoxInput = ({ onLLMStatusChange }: ChatBoxInputProps) => {
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
   const dispatch = useDispatch();
@@ -26,9 +30,18 @@ const ChatBoxInput = () => {
     if (!data.message.trim()) return;
 
     console.log(data.message);
+    // Notify parent component about the LLM status change
+    if (onLLMStatusChange) {
+      onLLMStatusChange(data.message, 'pending');
+    }
+
     // call api to get response and then dispatch to store.
     sendMessage(data.message).then((res) => {
       if (res && res.result) {
+        // Notify parent component about the LLM status change
+        if (onLLMStatusChange) {
+          onLLMStatusChange(data.message, 'success');
+        }
         dispatch(
           addMessage({
             id: uuid(),

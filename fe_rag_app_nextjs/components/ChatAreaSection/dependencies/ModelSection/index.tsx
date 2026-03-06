@@ -14,7 +14,7 @@ const models = [
 
 const ModelSection = () => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(models[2]);
+  const [selected, setSelected] = useState(models[3]);
 
   const [isPending, startTransition] = useTransition();
 
