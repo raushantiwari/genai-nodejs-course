@@ -1,11 +1,11 @@
+import type { SourceChunk } from '@/types/api';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ChatMessage {
   id: string;
   question: string;
   answer: string;
-  provider: string;
-  model: string;
+  sources: SourceChunk[];
   createdAt: number;
 }
 

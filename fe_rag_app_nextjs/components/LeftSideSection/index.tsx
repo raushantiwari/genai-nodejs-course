@@ -1,5 +1,12 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './LeftSideSection.module.scss';
+
 const LeftSideSection = () => {
+  const pathname = usePathname();
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles['sidebar-header']}>
@@ -7,10 +14,20 @@ const LeftSideSection = () => {
         <div className={styles.collapse}>☰</div>
       </div>
 
-      <button className={styles['new-chat']}>+ New chat</button>
+      <Link href="/" className={styles['new-chat']}>
+        + New chat
+      </Link>
 
       <nav className={styles.menu}>
-        <div className={`${styles['menu-item']} ${styles.active}`}>Building or Debugging Today</div>
+        <Link
+          href="/documents"
+          className={`${styles['menu-item']} ${pathname === '/documents' ? styles.active : ''}`}
+        >
+          Documents
+        </Link>
+        <div className={`${styles['menu-item']} ${pathname === '/' ? styles.active : ''}`}>
+          Building or Debugging Today
+        </div>
         <div className={styles['menu-item']}>LLM Content Search Tips</div>
         <div className={styles['menu-item']}>Figma Context MCP Setup</div>
         <div className={styles['menu-item']}>Vector DB with PostgreSQL</div>

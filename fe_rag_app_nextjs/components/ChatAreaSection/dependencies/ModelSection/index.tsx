@@ -1,44 +1,81 @@
 'use client';
 
 import { setModelCookie } from '@/actions/modelActions';
-import { useState, useTransition } from 'react';
+import type { ModelOption } from '@/types/api';
+import { listModels } from '@/utils/apiClient';
+import { useEffect, useState, useTransition } from 'react';
 import styles from './ModelSection.module.scss';
 
-const models = [
-  { label: 'GPT-4o Mini (OpenAI)', value: 'openai|gpt-4o-mini' },
-  { label: 'GPT-4.1 Nano (OpenAI)', value: 'openai|gpt-4.1-nano' },
-  { label: 'GPT-5 Nano (OpenAI)', value: 'openai|gpt-5-nano' },
-  { label: 'Gemma 3 (Ollama)', value: 'ollama|gemma3' },
-  { label: 'Groq LLM', value: 'groq|llama-3.3-70b-versatile' },
-];
+type ModelChoice = {
+  label: string;
+  value: string;
+};
+
+const toModelChoice = (option: ModelOption): ModelChoice => ({
+  label: `${option.model} (${option.provider})`,
+  value: `${option.provider}|${option.model}`,
+});
 
 const ModelSection = () => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(models[3]);
-
+  const [models, setModels] = useState<ModelChoice[]>([]);
+  const [selected, setSelected] = useState<ModelChoice | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const handleSelect = (model: (typeof models)[0]) => {
+  useEffect(() => {
+    let cancelled = false;
+
+    listModels()
+      .then((res) => {
+        if (cancelled) return;
+
+        const available = res.models.filter((m) => m.available).map(toModelChoice);
+        setModels(available);
+
+        if (available.length > 0) {
+          setSelected((prev) => prev ?? available[0]);
+          void setModelCookie(available[0].value);
+        }
+      })
+      .catch((err: Error) => {
+        if (!cancelled) {
+          setError(err.message || 'Failed to load models');
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSelect = (model: ModelChoice) => {
     startTransition(() => {
       setSelected(model);
       setModelCookie(model.value);
       setOpen(false);
     });
   };
+
   return (
     <div className={styles.modelWrapper}>
-      <button disabled={isPending} className={styles.modelButton} onClick={() => setOpen(!open)}>
-        {selected.label}
+      <button
+        disabled={isPending || models.length === 0}
+        className={styles.modelButton}
+        onClick={() => setOpen(!open)}
+      >
+        {error ? 'Models unavailable' : selected?.label || 'Loading models...'}
         <span className={styles.arrow}>▼</span>
       </button>
 
-      {open && (
+      {open && models.length > 0 && (
         <ul className={styles.dropdown}>
           {models.map((model) => (
             <li
               key={model.value}
               onClick={() => handleSelect(model)}
-              className={`${styles.option} ${selected.value === model.value ? styles.active : ''}`}
+              className={`${styles.option} ${selected?.value === model.value ? styles.active : ''}`}
             >
               {model.label}
             </li>

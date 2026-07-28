@@ -19,8 +19,7 @@ const Message = ({ data, statusInfo }: MessageProps) => {
 
   const question = isPending ? statusInfo.userInput : data?.question;
   const answer = data?.answer;
-  const provider = data?.provider;
-  const model = data?.model;
+  const sources = data?.sources ?? [];
 
   return (
     <>
@@ -40,9 +39,11 @@ const Message = ({ data, statusInfo }: MessageProps) => {
             : answer && (
                 <>
                   <SafeHtml html={answer} />
-                  <span className={styles.metadata}>
-                    {provider} - {model}
-                  </span>
+                  {sources.length > 0 && (
+                    <span className={styles.metadata}>
+                      {sources.length} source{sources.length > 1 ? 's' : ''}
+                    </span>
+                  )}
                 </>
               )}
         </div>

@@ -27,6 +27,9 @@
   color: white;
   cursor: pointer;
   margin-bottom: 16px;
+  text-decoration: none;
+  display: block;
+  text-align: center;
 }
 
 .menu {
@@ -41,6 +44,8 @@
   color: #cfcfcf;
   cursor: pointer;
   margin-bottom: 4px;
+  text-decoration: none;
+  display: block;
 }
 
 .menu-item:hover {

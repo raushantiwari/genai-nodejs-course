@@ -1,5 +1,6 @@
 import ChatArea from '@/components/ChatAreaSection';
 import styles from '@/components/ChatAreaSection/ChatAreaSection.module.scss';
+import AssetsSection from '@/components/ChatAreaSection/dependencies/AssetsSection';
 import ModelSection from '@/components/ChatAreaSection/dependencies/ModelSection';
 import LeftSideSection from '@/components/LeftSideSection';
 
@@ -11,6 +12,7 @@ const HomePage = () => {
         <header className={styles['chat-header']}>
           <div className={styles.model}>
             <ModelSection />
+            <AssetsSection />
           </div>
           <div className={styles.actions}>Share ⋯</div>
         </header>

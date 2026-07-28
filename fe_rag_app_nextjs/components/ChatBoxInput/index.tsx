@@ -2,10 +2,11 @@
 
 import { sendMessage } from '@/actions/chatActions';
 import { addMessage } from '@/store/slices/chatSlice';
+import { RootState } from '@/store/store';
 import { ICONS } from '@/utils/globalSvg';
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import styles from './ChatBoxInput.module.scss';
 
@@ -21,6 +22,9 @@ const ChatBoxInput = ({ onLLMStatusChange }: ChatBoxInputProps) => {
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
   const dispatch = useDispatch();
+  const selectedDocumentIds = useSelector(
+    (state: RootState) => state.documents.selectedDocumentIds,
+  );
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -29,16 +33,28 @@ const ChatBoxInput = ({ onLLMStatusChange }: ChatBoxInputProps) => {
   const onSubmit = (data: FormValues) => {
     if (!data.message.trim()) return;
 
-    console.log(data.message);
-    // Notify parent component about the LLM status change
     if (onLLMStatusChange) {
       onLLMStatusChange(data.message, 'pending');
     }
 
-    // call api to get response and then dispatch to store.
-    sendMessage(data.message).then((res) => {
-      if (res && res.result) {
-        // Notify parent component about the LLM status change
+    sendMessage(data.message, selectedDocumentIds)
+      .then((res) => {
+        if (res && res.answer) {
+          if (onLLMStatusChange) {
+            onLLMStatusChange(data.message, 'success');
+          }
+          dispatch(
+            addMessage({
+              id: uuid(),
+              question: data.message,
+              answer: res.answer,
+              sources: res.sources ?? [],
+              createdAt: Date.now(),
+            }),
+          );
+        }
+      })
+      .catch((err: Error) => {
         if (onLLMStatusChange) {
           onLLMStatusChange(data.message, 'success');
         }
@@ -46,18 +62,15 @@ const ChatBoxInput = ({ onLLMStatusChange }: ChatBoxInputProps) => {
           addMessage({
             id: uuid(),
             question: data.message,
-            answer: res.result.summary,
-            provider: res.result.provider,
-            model: res.result.model,
-            createdAt: res.result.timestamp,
+            answer: `Error: ${err.message || 'Failed to get response'}`,
+            sources: [],
+            createdAt: Date.now(),
           }),
         );
-      }
-    });
+      });
 
     reset();
 
-    // reset textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
